@@ -1,0 +1,111 @@
+---
+title: "使用 Next.js 和 MDX 搭建现代博客"
+date: "2024-01-20"
+excerpt: "详细介绍如何使用 Next.js 14 和 MDX 搭建一个功能完整的现代博客网站，包括搜索、主题切换等功能。"
+tags: ["Next.js", "MDX", "博客", "教程"]
+---
+
+# 使用 Next.js 和 MDX 搭建现代博客
+
+在这篇文章中，我将分享如何使用 Next.js 14 和 MDX 搭建一个功能完整的现代博客网站。
+
+## 为什么选择 Next.js + MDX？
+
+### Next.js 的优势
+
+- **性能优化**: 自动代码分割、图片优化
+- **SEO 友好**: 服务端渲染支持
+- **开发体验**: 热重载、TypeScript 支持
+- **部署简单**: Vercel 一键部署
+
+### MDX 的优势
+
+- **灵活性**: Markdown + React 组件
+- **可扩展**: 自定义组件支持
+- **易维护**: 纯文本格式
+
+## 项目架构
+
+```
+blog/
+├── app/                 # Next.js App Router
+├── components/          # React 组件
+├── content/            # MDX 文件
+├── lib/                # 工具函数
+└── types/              # TypeScript 类型
+```
+
+## 核心功能实现
+
+### 1. MDX 文件处理
+
+使用 `gray-matter` 解析 frontmatter：
+
+```typescript
+import matter from 'gray-matter'
+
+export function getPostBySlug(slug: string) {
+  const fileContents = fs.readFileSync(fullPath, 'utf8')
+  const { data, content } = matter(fileContents)
+  
+  return {
+    slug,
+    content,
+    ...data
+  }
+}
+```
+
+### 2. 搜索功能
+
+使用 `fuse.js` 实现全文搜索：
+
+```typescript
+import Fuse from 'fuse.js'
+
+const fuse = new Fuse(posts, {
+  keys: ['title', 'content', 'tags'],
+  threshold: 0.3
+})
+```
+
+### 3. 主题切换
+
+使用 `next-themes` 实现暗色主题：
+
+```jsx
+import { ThemeProvider } from 'next-themes'
+
+export default function App({ children }) {
+  return (
+    <ThemeProvider attribute="class">
+      {children}
+    </ThemeProvider>
+  )
+}
+```
+
+## 样式优化
+
+使用 TailwindCSS 的 Typography 插件：
+
+```css
+.prose-custom {
+  @apply prose prose-lg max-w-none;
+  @apply prose-headings:text-gray-900 dark:prose-headings:text-gray-100;
+}
+```
+
+## 部署建议
+
+推荐使用 Vercel 部署：
+
+1. 连接 GitHub 仓库
+2. 自动检测 Next.js 项目
+3. 一键部署上线
+
+## 总结
+
+通过 Next.js + MDX 的组合，我们可以快速搭建一个功能完整、性能优秀的现代博客。这个方案既保持了 Markdown 的简洁性，又具备了 React 的灵活性。
+
+希望这篇文章对你有所帮助！

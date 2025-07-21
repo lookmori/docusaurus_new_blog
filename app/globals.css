@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* NProgress Styles */
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: #3b82f6;
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+
+#nprogress .peg {
+  display: block;
+  position: absolute;
+  right: 0px;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px #3b82f6, 0 0 5px #3b82f6;
+  opacity: 1.0;
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+@layer base {
+  :root {
+    --toast-bg: #ffffff;
+    --toast-color: #374151;
+    --toast-border: #e5e7eb;
+  }
+
+  .dark {
+    --toast-bg: #1f2937;
+    --toast-color: #f9fafb;
+    --toast-border: #374151;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors;
+  }
+}
+
+@layer components {
+  .prose-custom {
+    @apply prose prose-lg max-w-none;
+    @apply prose-headings:text-gray-900 dark:prose-headings:text-gray-100;
+    @apply prose-p:text-gray-700 dark:prose-p:text-gray-300;
+    @apply prose-a:text-blue-600 dark:prose-a:text-blue-400;
+    @apply prose-strong:text-gray-900 dark:prose-strong:text-gray-100;
+    @apply prose-code:text-pink-600 dark:prose-code:text-pink-400;
+    @apply prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800;
+    @apply prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-600;
+  }
+
+  .glass-effect {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Blog specific styles */
+  .blog-grid {
+    @apply grid gap-6 md:gap-8;
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .blog-card {
+    @apply h-full flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700;
+    @apply hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-700;
+    @apply transition-all duration-300 overflow-hidden;
+  }
+
+  .blog-metadata {
+    @apply flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  /* Pagination styles */
+  .pagination-container {
+    @apply flex items-center justify-center gap-2 mt-12 mb-8;
+  }
+
+  .pagination-button {
+    @apply px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700;
+    @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300;
+    @apply hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-gray-800;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+  }
+
+  .pagination-current {
+    @apply px-4 py-2 bg-blue-600 text-white rounded-lg font-medium;
+    @apply border border-blue-600;
+  }
+
+  /* Code block and copy button styles */
+  .code-block-container {
+    @apply relative mb-6;
+  }
+  
+  .code-block-container:hover .copy-button {
+    opacity: 1;
+  }
+
+  .copy-button {
+    @apply absolute p-2 rounded-md transition-all duration-200;
+    @apply bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400;
+    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+    @apply opacity-0 transition-opacity;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Always show copy button on mobile */
+  @media (max-width: 768px) {
+    .copy-button {
+      @apply opacity-100;
+    }
+  }
+
+  /* Code block styling improvements */
+  .code-block-container pre {
+    @apply relative;
+  }
+
+  .code-block-container code {
+    @apply font-mono text-sm leading-relaxed;
+  }
+
+  /* Inline code styling */
+  .prose-custom code:not(.code-block-container code) {
+    @apply px-1.5 py-0.5 rounded-md text-sm font-mono;
+    @apply bg-gray-100 dark:bg-gray-800;
+    @apply text-pink-600 dark:text-pink-400;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+}

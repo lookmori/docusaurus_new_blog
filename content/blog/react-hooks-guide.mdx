@@ -1,0 +1,255 @@
+---
+title: "React Hooks 完全指南"
+date: "2024-01-25"
+excerpt: "深入理解 React Hooks 的原理和最佳实践，包括 useState、useEffect、自定义 Hooks 等内容。"
+tags: ["React", "Hooks", "JavaScript", "前端"]
+---
+
+# React Hooks 完全指南
+
+React Hooks 是 React 16.8 引入的新特性，它让我们可以在函数组件中使用状态和其他 React 特性。
+
+## 基础 Hooks
+
+### useState
+
+`useState` 是最常用的 Hook，用于在函数组件中添加状态：
+
+```jsx
+import { useState } from 'react'
+
+function Counter() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  )
+}
+```
+
+### useEffect
+
+`useEffect` 用于处理副作用，相当于 `componentDidMount`、`componentDidUpdate` 和 `componentWillUnmount` 的组合：
+
+```jsx
+import { useState, useEffect } from 'react'
+
+function Example() {
+  const [count, setCount] = useState(0)
+
+  // 相当于 componentDidMount 和 componentDidUpdate
+  useEffect(() => {
+    document.title = `You clicked ${count} times`
+  })
+
+  // 只在组件挂载时执行
+  useEffect(() => {
+    console.log('Component mounted')
+  }, [])
+
+  // 清理副作用
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('Timer tick')
+    }, 1000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  )
+}
+```
+
+## 高级 Hooks
+
+### useContext
+
+用于消费 Context：
+
+```jsx
+import { useContext } from 'react'
+
+const ThemeContext = React.createContext()
+
+function Button() {
+  const theme = useContext(ThemeContext)
+  return (
+    <button style={{ background: theme.background }}>
+      I am styled by theme context!
+    </button>
+  )
+}
+```
+
+### useReducer
+
+用于管理复杂状态逻辑：
+
+```jsx
+import { useReducer } from 'react'
+
+const initialState = { count: 0 }
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 }
+    case 'decrement':
+      return { count: state.count - 1 }
+    default:
+      throw new Error()
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState)
+  
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+    </>
+  )
+}
+```
+
+## 自定义 Hooks
+
+自定义 Hooks 让我们可以提取组件逻辑到可重用的函数中：
+
+```jsx
+import { useState, useEffect } from 'react'
+
+// 自定义 Hook
+function useFetch(url) {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(url)
+        const result = await response.json()
+        setData(result)
+      } catch (err) {
+        setError(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [url])
+
+  return { data, loading, error }
+}
+
+// 使用自定义 Hook
+function UserProfile({ userId }) {
+  const { data: user, loading, error } = useFetch(`/api/users/${userId}`)
+
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!user) return <div>No user found</div>
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  )
+}
+```
+
+## Hooks 规则
+
+使用 Hooks 时需要遵循两个规则：
+
+1. **只在最顶层调用 Hooks**：不要在循环、条件或嵌套函数中调用 Hooks
+2. **只在 React 函数中调用 Hooks**：不要在普通的 JavaScript 函数中调用 Hooks
+
+## 最佳实践
+
+### 1. 合理使用依赖数组
+
+```jsx
+// ❌ 错误：缺少依赖
+useEffect(() => {
+  fetchUser(userId)
+}, [])
+
+// ✅ 正确：包含所有依赖
+useEffect(() => {
+  fetchUser(userId)
+}, [userId])
+```
+
+### 2. 避免不必要的重新渲染
+
+```jsx
+// 使用 useMemo 缓存计算结果
+const expensiveValue = useMemo(() => {
+  return computeExpensiveValue(a, b)
+}, [a, b])
+
+// 使用 useCallback 缓存函数
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b)
+}, [a, b])
+```
+
+### 3. 拆分复杂的 useEffect
+
+```jsx
+// ❌ 一个 useEffect 处理多个逻辑
+useEffect(() => {
+  // 订阅 A
+  subscribeToA()
+  // 订阅 B
+  subscribeToB()
+  
+  return () => {
+    unsubscribeFromA()
+    unsubscribeFromB()
+  }
+}, [])
+
+// ✅ 分离关注点
+useEffect(() => {
+  subscribeToA()
+  return () => unsubscribeFromA()
+}, [])
+
+useEffect(() => {
+  subscribeToB()
+  return () => unsubscribeFromB()
+}, [])
+```
+
+## 总结
+
+React Hooks 为函数组件带来了强大的能力，让我们可以：
+
+- 在函数组件中使用状态
+- 处理副作用
+- 重用状态逻辑
+- 简化组件层次结构
+
+掌握 Hooks 是现代 React 开发的必备技能，希望这篇指南对你有所帮助！
