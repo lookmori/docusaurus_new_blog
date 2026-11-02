@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Toast from '@/components/ui/Toast'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
@@ -12,8 +13,8 @@ import FloatingElements from '@/components/animations/FloatingElements'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '我的博客',
-  description: '基于Next.js和MDX的个人博客',
+  title: '随心的随笔',
+  description: '随心的随笔 —— 记录技术与生活的个人博客',
 }
 
 export default function RootLayout({
@@ -34,6 +35,7 @@ export default function RootLayout({
                 {children}
               </main>
             </div>
+            <Footer />
             {/* Music player components have been removed */}
             <Toast />
           </ErrorBoundary>
